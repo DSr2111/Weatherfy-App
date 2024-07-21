@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Weatherfy - Search{% endblock %}
+{% block content %}
+<h1>Search for forecasts here</h1>
+<form id="search-form" class="mt-4">
+    <div class="input-group">
+        <input type="text" name="city-search" id="city-search" class="form-control" placeholder="City name.." autocomplete="off" />
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="search-button">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+    <div id="suggestions" class="list-group mt-2"></div>
+</form>
+<div id="weather-data" class="mt-4"></div>
+{% endblock %}
