@@ -1,12 +1,16 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
 import requests
-from flask_login import LoginManager, login_user, logout_user, login_required, logout_user, current_user 
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user 
 from flask_sqlalchemy import SQLAlchemy
 import os
 from flask_bcrypt import Bcrypt
 from models import db, User, Favorite
 from forms import RegistrationForm, LoginForm
 from config import Config, TestConfig
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -16,8 +20,8 @@ if flask_env == 'testing':
 else:
     app.config.from_object(Config)
 
-app.config['SECRET_KEY'] = 'sb123'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:sb123@localhost:5432/weather_db'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -30,8 +34,7 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 #API Key for OpenWeather
-api_key = 'fa2e514d1c404ecbb1efdc3fa3eed29a'
-
+api_key = os.getenv('API_KEY')
 
 @app.route('/')
 def home():
@@ -79,8 +82,6 @@ def flash_errors(form):
         for error in errors:
             flash(f"Error in the {getattr(form, field).label.text} field - {error}", 'danger')
 
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -94,7 +95,6 @@ def login():
             return redirect(url_for('home'))
         else:
             flash('Credentials invalid. Please review email and password.', 'danger')
-    # If the form is not validated or credentials are invalid, render the login form
     return render_template('login.html', form=form)
 
 
@@ -186,11 +186,6 @@ def delete_favorite():
             return jsonify({'status': 'error', 'message': 'Favorite not found.'})
     return jsonify({'status': 'error', 'message': 'City name is required.'})
 
-
-
-if __name__ == '__main__':
-    # Path to your initialize_db.sql file
-    sql_file_path = os.path.join(os.path.dirname(__file__), 'sql', 'initialize_db.sql')
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
