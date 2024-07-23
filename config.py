@@ -1,11 +1,13 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Config:
-    SECRET_KEY = 'sb123'
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:sb123@localhost:5432/weather_db'
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class TestConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///test.db'
-    WTF_CSRF_ENABLED = False
+    SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URL')
