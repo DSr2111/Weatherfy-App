@@ -7,6 +7,9 @@ from flask_bcrypt import Bcrypt
 from models import db, User, Favorite
 from forms import RegistrationForm, LoginForm
 from config import Config, TestConfig
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -16,8 +19,8 @@ if flask_env == 'testing':
 else:
     app.config.from_object(Config)
 
-app.config['SECRET_KEY'] = 'sb123'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:sb123@localhost:5432/weather_db'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -29,8 +32,8 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-#API Key for OpenWeather
-api_key = 'fa2e514d1c404ecbb1efdc3fa3eed29a'
+# API Key for OpenWeather
+api_key = os.getenv('API_KEY')
 
 
 @app.route('/')
@@ -38,13 +41,11 @@ def home():
     styles = "css/styles.css"
     return render_template('home.html', styles=styles)
 
-
 @app.route('/dashboard')
 @login_required
 def dashboard():
     user_favorites = Favorite.query.filter_by(user_id=current_user.id).all()
     return render_template('dashboard.html', favorites=user_favorites, user_name=current_user.username)
-
 
 @app.route('/search', methods=['GET'])
 @login_required
@@ -54,7 +55,6 @@ def search():
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -79,8 +79,6 @@ def flash_errors(form):
         for error in errors:
             flash(f"Error in the {getattr(form, field).label.text} field - {error}", 'danger')
 
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -97,7 +95,6 @@ def login():
     # If the form is not validated or credentials are invalid, render the login form
     return render_template('login.html', form=form)
 
-
 @app.route('/logout')
 def logout():
     logout_user()
@@ -113,7 +110,7 @@ def get_suggestions():
         suggestions_url = f'http://api.openweathermap.org/geo/1.0/direct?q={query}&limit=5&appid={api_key}'
         response = requests.get(suggestions_url)
         suggestions = response.json()
-        
+
         results = []
         for suggestion in suggestions:
             results.append({
@@ -168,7 +165,6 @@ def favorite():
             return jsonify({'status': 'info', 'message': f'{city_name} is already in your favorites.'})
     return jsonify({'status': 'error', 'message': 'City name, latitude, and longitude are required.'})
 
-
 @app.route('/delete_favorite', methods=['POST'])
 @login_required
 def delete_favorite():
@@ -185,12 +181,6 @@ def delete_favorite():
         else:
             return jsonify({'status': 'error', 'message': 'Favorite not found.'})
     return jsonify({'status': 'error', 'message': 'City name is required.'})
-
-
-
-if __name__ == '__main__':
-    # Path to your initialize_db.sql file
-    sql_file_path = os.path.join(os.path.dirname(__file__), 'sql', 'initialize_db.sql')
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
