@@ -20,9 +20,8 @@ if flask_env == 'testing':
 else:
     app.config.from_object(Config)
 
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Check if the environment variables are loaded
+assert app.config['SQLALCHEMY_DATABASE_URI'] is not None, "SQLALCHEMY_DATABASE_URI is not set"
 
 db.init_app(app)
 
@@ -33,7 +32,7 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-#API Key for OpenWeather
+# API Key for OpenWeather
 api_key = os.getenv('API_KEY')
 
 @app.route('/')
@@ -41,13 +40,11 @@ def home():
     styles = "css/styles.css"
     return render_template('home.html', styles=styles)
 
-
 @app.route('/dashboard')
 @login_required
 def dashboard():
     user_favorites = Favorite.query.filter_by(user_id=current_user.id).all()
     return render_template('dashboard.html', favorites=user_favorites, user_name=current_user.username)
-
 
 @app.route('/search', methods=['GET'])
 @login_required
@@ -57,7 +54,6 @@ def search():
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -96,7 +92,6 @@ def login():
         else:
             flash('Credentials invalid. Please review email and password.', 'danger')
     return render_template('login.html', form=form)
-
 
 @app.route('/logout')
 def logout():
@@ -168,7 +163,6 @@ def favorite():
             return jsonify({'status': 'info', 'message': f'{city_name} is already in your favorites.'})
     return jsonify({'status': 'error', 'message': 'City name, latitude, and longitude are required.'})
 
-
 @app.route('/delete_favorite', methods=['POST'])
 @login_required
 def delete_favorite():
@@ -185,7 +179,6 @@ def delete_favorite():
         else:
             return jsonify({'status': 'error', 'message': 'Favorite not found.'})
     return jsonify({'status': 'error', 'message': 'City name is required.'})
-
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
