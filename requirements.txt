@@ -12,13 +12,16 @@ Flask-SQLAlchemy==3.1.1
 Flask-Testing==0.8.1
 Flask-WTF==1.2.1
 flask_requests==0.0.14
+gunicorn==22.0.0
 idna==3.7
 importlib_metadata==8.0.0
 itsdangerous==2.2.0
 Jinja2==3.1.4
 MarkupSafe==2.1.5
+packaging==24.1
 pampy==0.3.0
 psycopg2-binary==2.9.9
+python-dotenv==1.0.1
 requests==2.32.3
 SQLAlchemy==2.0.31
 typing_extensions==4.12.2
