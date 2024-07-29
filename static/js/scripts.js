@@ -96,20 +96,20 @@ document.addEventListener("DOMContentLoaded", function () {
       weatherDataDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
     } else {
       weatherDataDiv.innerHTML = `
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title">Weather in ${data.name}</h3>
-                        <p class="card-text" id="temp-${data.name}">Temperature: ${data.temp} °C</p>
-                        <p class="card-text" id="desc-${data.name}">Weather: ${data.description}</p>
-                        <p class="card-text" id="lat-${data.lat}">Latitude: ${data.lat}</p>
-                        <p class="card-text" id="lon-${data.lon}">Longitude: ${data.lon}</p>
-                        <img src="http://openweathermap.org/img/wn/${data.icon}.png" alt="Weather Icon">
-                        <button class="btn btn-outline-danger favorite-button" data-city="${data.name}" data-lat="${data.lat}" data-lon="${data.lon}">
-                            <i class="fa fa-heart"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
+                  <div class="card">
+                      <div class="card-body">
+                          <h3 class="card-title">Weather in ${data.name}</h3>
+                          <p class="card-text" id="temp-${data.name}">Temperature: ${data.temp} °C</p>
+                          <p class="card-text" id="desc-${data.name}">Weather: ${data.description}</p>
+                          <p class="card-text" id="lat-${data.lat}">Latitude: ${data.lat}</p>
+                          <p class="card-text" id="lon-${data.lon}">Longitude: ${data.lon}</p>
+                          <img src="http://openweathermap.org/img/wn/${data.icon}.png" alt="Weather Icon">
+                          <button class="btn btn-outline-danger favorite-button" data-city="${data.name}" data-lat="${data.lat}" data-lon="${data.lon}">
+                              <i class="fa fa-heart"></i>
+                          </button>
+                      </div>
+                  </div>
+              `;
       const favoriteButton = weatherDataDiv.querySelector(".favorite-button");
       favoriteButton.addEventListener("click", function () {
         favoriteCity(data.name, data.lat, data.lon);
@@ -189,6 +189,24 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => console.error("Error fetching weather data:", error));
   }
+
+  // Hamburger menu functionality
+  const navbarToggler = document.querySelector(".navbar-toggler");
+  const navbarCollapse = document.querySelector(".navbar-collapse");
+
+  navbarToggler.addEventListener("click", function () {
+    navbarCollapse.classList.toggle("show");
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", function (event) {
+    const isClickInsideNavbar =
+      navbarCollapse.contains(event.target) ||
+      navbarToggler.contains(event.target);
+    if (!isClickInsideNavbar && navbarCollapse.classList.contains("show")) {
+      navbarCollapse.classList.remove("show");
+    }
+  });
 
   setTimeout(function () {
     const flashMessages = document.querySelectorAll(".flash-message");

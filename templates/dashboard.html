@@ -1,27 +1,37 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <h2>{{user_name}}'s Dashboard</h2>
-<h6 style="color: grey;">Don't forget to refresh the data to update weather info</h6>
+<h6 style="color: grey">
+  Don't forget to refresh the data to update weather info
+</h6>
 <div id="favorites-container" class="mt-4">
-    {% if favorites|length == 0 %}
-        <p>Get searching and add your favourite locations here!</p>
-    {% else %}
-        {% for favorite in favorites %}
-            <div class="card favorite-card" data-city="{{ favorite.city_name }}">
-                <div class="card-body">
-                    <h3 class="card-title">{{ favorite.city_name }}</h3>
-                    <p class="card-text" id="temp-{{ favorite.city_name }}">Temperature: -- °C</p>
-                    <p class="card-text" id="desc-{{ favorite.city_name }}">Weather: --</p>
-                    <img src="" alt="Weather Icon" id="icon-{{ favorite.city_name }}"> <br>
-                    <button class="btn btn-primary mt-2 refresh-weather" data-city="{{ favorite.city_name }}" data-lat="{{ favorite.lat }}" data-lon="{{ favorite.lon }}">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                    <button class="btn btn-danger mt-2 delete-favorite" data-city="{{ favorite.city_name }}">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        {% endfor %}
-    {% endif %}
+  {% if favorites|length == 0 %}
+  <p>Get searching and add your favourite locations here!</p>
+  {% else %} {% for favorite in favorites %}
+  <div class="card favorite-card" data-city="{{ favorite.city_name }}">
+    <div class="card-body">
+      <h3 class="card-title">{{ favorite.city_name }}</h3>
+      <p class="card-text" id="temp-{{ favorite.city_name }}">
+        Temperature: -- °C
+      </p>
+      <p class="card-text" id="desc-{{ favorite.city_name }}">Weather: --</p>
+      <img src="" alt="Weather Icon" id="icon-{{ favorite.city_name }}" />
+      <br />
+      <button
+        class="btn btn-primary mt-2 refresh-weather"
+        data-city="{{ favorite.city_name }}"
+        data-lat="{{ favorite.lat }}"
+        data-lon="{{ favorite.lon }}"
+      >
+        <i class="fas fa-sync-alt"></i>
+      </button>
+      <button
+        class="btn btn-danger mt-2 delete-favorite"
+        data-city="{{ favorite.city_name }}"
+      >
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  </div>
+  {% endfor %} {% endif %}
 </div>
 {% endblock %}
