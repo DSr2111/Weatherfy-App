@@ -127,6 +127,51 @@ p.lead {
   margin: 0 auto;
 }
 
+/* New styles for the weather card */
+
+/* Hide the weather-card by default */
+.weather-card {
+  display: none;
+}
+
+/* Show the weather-card when it has content */
+#weather-data .weather-card {
+  display: block;
+  margin: 0 auto; /* Center horizontally */
+}
+
+#weather-data {
+  display: none; /* Hidden by default */
+  margin-top: 10px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  min-height: 200px; /* Ensure it has a height */
+}
+
+.weather-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: white;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  min-width: 200px;
+  margin: 15px;
+  text-align: center; /* Center text inside the card */
+}
+
+/* Ensure responsiveness */
+@media (max-width: 480px) {
+  .weather-card {
+    flex: 1 1 calc(100% - 15px);
+  }
+}
+
 .favorite-card {
   flex: 1 1 calc(33.333% - 15px);
   display: flex;

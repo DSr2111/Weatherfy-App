@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchInput = document.getElementById("city-search");
   const suggestions = document.getElementById("suggestions");
 
-  // setting up Refresh and Delete buttons to work on Dashboard
+  // Setting up Refresh and Delete buttons to work on Dashboard
   setupDeleteButtons();
   setupRefreshButtons();
 
@@ -96,20 +96,18 @@ document.addEventListener("DOMContentLoaded", function () {
       weatherDataDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
     } else {
       weatherDataDiv.innerHTML = `
-                  <div class="card">
-                      <div class="card-body">
-                          <h3 class="card-title">Weather in ${data.name}</h3>
-                          <p class="card-text" id="temp-${data.name}">Temperature: ${data.temp} °C</p>
-                          <p class="card-text" id="desc-${data.name}">Weather: ${data.description}</p>
-                          <p class="card-text" id="lat-${data.lat}">Latitude: ${data.lat}</p>
-                          <p class="card-text" id="lon-${data.lon}">Longitude: ${data.lon}</p>
-                          <img src="http://openweathermap.org/img/wn/${data.icon}.png" alt="Weather Icon">
-                          <button class="btn btn-outline-danger favorite-button" data-city="${data.name}" data-lat="${data.lat}" data-lon="${data.lon}">
-                              <i class="fa fa-heart"></i>
-                          </button>
-                      </div>
-                  </div>
-              `;
+              <div class="weather-card">
+                  <h3 class="card-title">Weather in ${data.name}</h3>
+                  <p class="card-text" id="temp-${data.name}">Temperature: ${data.temp} °C</p>
+                  <p class="card-text" id="desc-${data.name}">Weather: ${data.description}</p>
+                  <p class="card-text" id="lat-${data.lat}">Latitude: ${data.lat}</p>
+                  <p class="card-text" id="lon-${data.lon}">Longitude: ${data.lon}</p>
+                  <img src="http://openweathermap.org/img/wn/${data.icon}.png" alt="Weather Icon">
+                  <button class="btn btn-outline-danger favorite-button" data-city="${data.name}" data-lat="${data.lat}" data-lon="${data.lon}">
+                      <i class="fa fa-heart"></i>
+                  </button>
+              </div>
+          `;
       const favoriteButton = weatherDataDiv.querySelector(".favorite-button");
       favoriteButton.addEventListener("click", function () {
         favoriteCity(data.name, data.lat, data.lon);

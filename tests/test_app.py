@@ -29,6 +29,7 @@ class BaseTestCase(TestCase):
         db.session.add(user)
         db.session.commit()
 
+#Authentication tests
 class TestUserAuthentication(BaseTestCase):
     """Test cases for user authentication routes."""
 
@@ -42,6 +43,38 @@ class TestUserAuthentication(BaseTestCase):
         })
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Signup successful! You are now logged in.', response.data)
+    
+    def test_signup_invalid_data(self):
+        """Test user signup with invalid data."""
+        # Test missing password confirmation
+        response = self.client.post('/signup', data={
+            'username': 'invaliduser',
+            'email': 'invaliduser@example.com',
+            'password': 'password123',
+            'confirm_password': ''  # Missing confirmation
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Error in the Confirm Password field - This field is required.', response.data)
+        
+        # Test mismatched passwords
+        response = self.client.post('/signup', data={
+            'username': 'mismatchuser',
+            'email': 'mismatchuser@example.com',
+            'password': 'password123',
+            'confirm_password': 'password321'  # Mismatch
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Error in the Confirm Password field - Passwords must match.', response.data)
+        
+        # Test missing username
+        response = self.client.post('/signup', data={
+            'username': '',
+            'email': 'nouser@example.com',
+            'password': 'password123',
+            'confirm_password': 'password123'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Error in the Username field - This field is required.', response.data)
 
     def test_login(self):
         """Test user login."""
@@ -61,7 +94,26 @@ class TestUserAuthentication(BaseTestCase):
         response = self.client.get('/logout')
         self.assertEqual(response.status_code, 302)
         self.assertIn('/login', response.location)
+    
+    def test_login_invalid_data(self):
+        """Test user login with invalid data."""
+        # Test incorrect password
+        response = self.client.post('/login', data={
+            'email': 'testuser@example.com',
+            'password': 'wrongpassword'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Credentials invalid. Please review email and password.', response.data)
+        
+        # Test non-existent email
+        response = self.client.post('/login', data={
+            'email': 'nonexistent@example.com',
+            'password': 'password'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Credentials invalid. Please review email and password.', response.data)
 
+#Dashboard tests
 class TestDashboard(BaseTestCase):
     """Test cases for the dashboard route."""
 
@@ -75,6 +127,7 @@ class TestDashboard(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Your Dashboard', response.data)
 
+# Weather Routes tests
 class TestWeatherRoutes(BaseTestCase):
     """Test cases for weather-related routes."""
 
@@ -97,6 +150,23 @@ class TestWeatherRoutes(BaseTestCase):
         response = self.client.get('/get_weather?lat=51.51&lon=-0.13&city_name=London')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'temperature', response.data)
+    
+    def test_get_weather_invalid_query(self):
+        """Test weather data retrieval with invalid query parameters."""
+        # Test missing lat and lon
+        response = self.client.get('/get_weather?city_name=London')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b'Error: Latitude and longitude are required.', response.data)
+        
+        # Test invalid latitude and longitude
+        response = self.client.get('/get_weather?lat=abc&lon=xyz&city_name=London')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b'Error: Invalid latitude or longitude.', response.data)
+        
+        # Test city name with no matching weather data
+        response = self.client.get('/get_weather?lat=1000&lon=1000&city_name=InvalidCity')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(b'Weather data not found', response.data)
 
 class TestFavoriteRoutes(BaseTestCase):
     """Test cases for favorite management routes."""

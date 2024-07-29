@@ -3,11 +3,35 @@
 <h6 style="color: grey">
   Don't forget to refresh the data to update weather info
 </h6>
+
+{% if favorites|length == 0 %}
+<h3 style="margin-left: 10%">Get searching!</h3>
+<form id="search-form" class="mt-4">
+  <div class="input-group">
+    <input
+      type="text"
+      name="city-search"
+      id="city-search"
+      class="form-control"
+      placeholder="City name.."
+      autocomplete="off"
+    />
+    <div class="input-group-append">
+      <button class="btn btn-primary" type="button" id="search-button">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+  </div>
+  <div id="suggestions" class="list-group mt-2"></div>
+</form>
+<div id="weather-data" class="mt-4"></div>
+{% else %}
 <div id="favorites-container" class="mt-4">
-  {% if favorites|length == 0 %}
-  <p>Get searching and add your favourite locations here!</p>
-  {% else %} {% for favorite in favorites %}
-  <div class="card favorite-card" data-city="{{ favorite.city_name }}">
+  {% for favorite in favorites %}
+  <div
+    class="card weather-card favorite-card"
+    data-city="{{ favorite.city_name }}"
+  >
     <div class="card-body">
       <h3 class="card-title">{{ favorite.city_name }}</h3>
       <p class="card-text" id="temp-{{ favorite.city_name }}">
@@ -32,6 +56,6 @@
       </button>
     </div>
   </div>
-  {% endfor %} {% endif %}
+  {% endfor %}
 </div>
-{% endblock %}
+{% endif %} {% endblock %}
