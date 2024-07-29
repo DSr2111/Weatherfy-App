@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.status === "success") {
           alert(`${cityName} has been added to your favorites!`);
         } else {
-          alert("Error adding favorite.");
+          alert("City already in favorites.");
         }
       })
       .catch((error) => console.error("Error favoriting city:", error));
