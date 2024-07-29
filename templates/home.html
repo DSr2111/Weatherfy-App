@@ -1,9 +1,12 @@
-{% extends "base.html" %}
-{% block title %}Weatherfy - Home{% endblock %}
-{% block content %}
-    <div class="container mt-5 text-center">
-        <h1 class="display-4">Welcome to Weatherfy</h1>
-        <br>
-        <p class="lead">Your go-to app for weather forecasts and updates.</p>
-    </div>
+{% extends "base.html" %} {% block title %}Weatherfy - Home{% endblock %} {%
+block content %}
+<div class="container mt-5">
+  <h1>Welcome to Weatherfy</h1>
+  <p>Your personal weather tracking app.</p>
+  {% if not current_user.is_authenticated %}
+  <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg"
+    >Get Started</a
+  >
+  {% endif %}
+</div>
 {% endblock %}
